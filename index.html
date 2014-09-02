@@ -53,12 +53,19 @@
 
         <section data-background="images/bg-stars.jpg">
           <h1>Who dis?</h1>
-          <p>My name is James</p>
-          <br>
-          <br>
-
-          <h2>Who dat over there?</h2>
+          <img height="150" src="images/jmf-where20.jpg">
+          <p>James Fee</p>
+          <p style="font-size:40%;">
+          <s>Business Development</s><br>
+          Web Developer<br>
+          Golfer<br>
+          PHXGeo Founder<br>
+        </p>
+		</section>
+		<section data-background="images/bg-stars.jpg">
+          <h1>Who dat over there?</h1>
           <img height="150" src="images/dressedup.jpg">
+          <p>Sheldon McGee</p>
           <p style="font-size:40%;">
             Web Developer<br>
             Build in the physical world with wood<br>
@@ -72,12 +79,65 @@
           
         </section>
 
+        <section data-background="images/bg-stars.jpg" id="fragments">
+        <h1>Why No GIS Servers?</h1>
+        <p class="fragment">They are slow</p>
+		<p class="fragment">They are expensive to license</p>
+		<p class="fragment">They require you to use .NET, Java, C++</p>
+		<p class="fragment">They are middleware</p>
+		<p class="fragment">Not the future</p>
+        </section>
+        
+        <section data-background="images/bg-stars.jpg" id="fragments">
+        <h1>Tiling</h1>
+        <p class="fragment">TileMill + MBTiles</p>
+		<p class="fragment">GeoServer and GeoWebCache</p>
+		<p class="fragment">Esri ArcGIS</p>
+		<p class="fragment">Mapnik (for those who roll their own)</p>
+		<p class="fragment">Google/OSM/etc</p>
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+        <h1>But James...</h1>
+        <img src="images/nathan-filliion-speechless.gif">
+        <h2>Tiling only works for data that doesn't change.</h2>
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+        <h2>That's what databases are for!</h2>
+        <img src="images/troy-abed-community.gif">
+        <h2>So let's use a spatial db to serve up the data!</h2>
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+        <h2>GeoJSON</h2>
+        <h3>GeoJSON is a format for encoding a variety of geographic data structures.</h3>
+        <pre><code data-trim contenteditable>
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-112.46, 34.54]
+  },
+  "properties": {
+    "name": "Prescott, Arizona"
+  }
+}
+		</code></pre>
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+        <h1>Here's the plan</h1>
+        <img src="images/kermit.gif">
+        
+        </section>
+        
         <section data-background="images/bg-stars.jpg">
           <h1>The tech</h1>
           <ul>
             <li>Google Compute Engine
             <li>PostGIS
-            <li>Some JS mapping library <br>(we went with google maps ... CHECK OUT THIS WATCH!)
+            <li>Some JS mapping library
 
           </ul> 
 
@@ -86,6 +146,39 @@
           
         </section>    
 
+		<section data-background="images/bg-stars.jpg">
+		<h2>Google Compute Engine</h2>
+		<ul>
+			<li>Node.js
+			<li>Spatial databases
+			<li>Anything else?
+		</ul>
+		</section>
+
+		<section data-background="images/bg-stars.jpg">
+		<h2>PostGIS</h2>
+		<img src="images/Logo_square_postgis.png">
+		</section>
+		
+	   	<section data-background="images/bg-stars.jpg">
+		<h2>Google Maps</h2>
+		<img src="images/googlemapsscreenshot.jpg" width=400>
+		</section>
+
+	   	<section data-background="images/bg-stars.jpg">
+		<h3>Using GeoJSON with Google Maps:</h3>
+		<p>Google Maps Javascript API v3 Data Layer</p>
+		
+        <pre><code data-trim contenteditable>
+        map.data.loadGeoJson('http://localhost/prescott.json');
+		</code></pre>
+		</section>
+		
+		<section data-background="images/bg-stars.jpg">
+		<h1>The Demo</h1>
+		<h2><a href="http://agic2014.sunny.solutions/azclick.html">GIS in Google Maps</a></h2>
+		</section>
+		
         <section>
           <h1>END</h1>
           <h2>Questions?</h2>

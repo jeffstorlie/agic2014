@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>ConfPres 2014 - I've been to more conferences than you</title>
+    <title>AGIC 2014</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -61,8 +61,8 @@
           Golfer<br>
           PHXGeo Founder<br>
         </p>
-		</section>
-		<section data-background="images/bg-stars.jpg">
+    </section>
+    <section data-background="images/bg-stars.jpg">
           <h1>Who dat over there?</h1>
           <img height="150" src="images/dressedup.jpg">
           <p>Sheldon McGee</p>
@@ -80,39 +80,46 @@
         </section>
 
         <section data-background="images/bg-stars.jpg" id="fragments">
-        <h1>Why No GIS Servers?</h1>
-        <p class="fragment">They are slow</p>
-		<p class="fragment">They are expensive to license</p>
-		<p class="fragment">They require you to use .NET, Java, C++</p>
-		<p class="fragment">They are middleware</p>
-		<p class="fragment">Not the future</p>
+          <h1>Why No GIS Servers?</h1>
+          <p class="fragment">They are slow</p>
+          <p class="fragment">They <strike>are</strike> can be expensive to license</p>
+          <p class="fragment">They require you to use .NET, Java, C++</p>
+          <p class="fragment">They are middleware</p>
+          <p class="fragment">Not the future</p>
+
+          <aside class="notes">
+            What if the GeoServer guy is here!?! 
+            <br>
+            What about "easy to change styles, adapt to different base maps"?
+          </aside>
+
         </section>
         
         <section data-background="images/bg-stars.jpg">
-        <h1>Tiling</h1>
-        <p class="fragment">TileMill + MBTiles</p>
-		<p class="fragment">GeoServer and GeoWebCache</p>
-		<p class="fragment">Esri ArcGIS</p>
-		<p class="fragment">Mapnik (for those who roll their own)</p>
-		<p class="fragment">Google/OSM/etc</p>
+          <h1>Tiling</h1>
+          <p class="fragment">TileMill + MBTiles</p>
+          <p class="fragment">GeoServer and GeoWebCache</p>
+          <p class="fragment">Esri ArcGIS</p>
+          <p class="fragment">Mapnik (for those who roll their own)</p>
+          <p class="fragment">Google/OSM/etc</p>
+        </section>
+        
+        <section data-background="images/nathan-filliion-speechless.gif">
+          <h1>But James...</h1>
+          <!-- <img src="images/nathan-filliion-speechless.gif"> -->
+          <h3>Tiling only works for data that doesn't change.</h3>
+        </section>
+        
+        <section data-background="images/troy-abed-community.gif">
+          <h2>That's what databases are for!</h2>
+          <!-- <img src="images/troy-abed-community.gif"> -->
+          <h4>So let's use a spatial db to serve up the data!</h4>
         </section>
         
         <section data-background="images/bg-stars.jpg">
-        <h1>But James...</h1>
-        <img src="images/nathan-filliion-speechless.gif">
-        <h2>Tiling only works for data that doesn't change.</h2>
-        </section>
-        
-        <section data-background="images/bg-stars.jpg">
-        <h2>That's what databases are for!</h2>
-        <img src="images/troy-abed-community.gif">
-        <h2>So let's use a spatial db to serve up the data!</h2>
-        </section>
-        
-        <section data-background="images/bg-stars.jpg">
-        <h2>GeoJSON</h2>
-        <h3>GeoJSON is a format for encoding a variety of geographic data structures.</h3>
-        <pre><code data-trim contenteditable>
+          <h2>GeoJSON</h2>
+          <h3>GeoJSON is a format for encoding a variety of geographic data structures.</h3>
+          <pre><code data-trim contenteditable>
 {
   "type": "Feature",
   "geometry": {
@@ -123,22 +130,20 @@
     "name": "Prescott, Arizona"
   }
 }
-		</code></pre>
+          </code></pre>
         </section>
         
-        <section data-background="images/bg-stars.jpg">
-        <h1>Here's the plan</h1>
-        <img src="images/kermit.gif">
-        
+        <section data-background="images/kermit.gif">
+          <h1>Here's the plan</h1>
+          <!--  <img src="images/kermit.gif">  -->
         </section>
         
         <section data-background="images/bg-stars.jpg">
           <h1>The tech</h1>
           <ul>
-            <liNode.js
+            <li>Node.js
             <li>PostGIS
             <li>Some JS mapping library
-
           </ul> 
 
           <aside class="notes">
@@ -146,63 +151,112 @@
           
         </section>    
 
-		<section data-background="images/bg-stars.jpg">
-		<h2Node.js</h2>
-		A whole lotta goodness from Sheldon
-		</section>
+        <section data-background="images/bg-stars.jpg">
+          <h2>Node.js</h2>
+          A whole lotta goodness from Sheldon
+        </section>
 
-		<section data-background="images/bg-stars.jpg">
-		<h2>PostGIS</h2>
-		<img src="images/Logo_square_postgis.png">
-		</section>
-		
-	   	<section data-background="images/bg-stars.jpg">
-		<h2>Google Maps</h2>
-		<img src="images/googlemapsscreenshot.jpg" width=400>
-		</section>
+        <section data-background="images/bg-stars.jpg">
+          <h2>PostGIS</h2>
+          <img src="images/Logo_square_postgis.png">
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+          <h2>Google Maps</h2>
+          <img src="images/googlemapsscreenshot.jpg" width=400>
+        </section>
 
-	   	<section data-background="images/bg-stars.jpg">
-		<h3>Using GeoJSON with Google Maps:</h3>
-		<p>Google Maps Javascript API v3 Data Layer</p>
-		
-        <pre><code data-trim contenteditable>
-        map.data.loadGeoJson('http://localhost/prescott.json');
-		</code></pre>
-		</section>
-		
-		<section data-background="images/bg-stars.jpg">
-		<h1>Loading data into PostGIS</h1>
-		...some code added by Sheldon and maybe a segway into a live demo...
-		</section>
-		
-		<section data-background="images/bg-stars.jpg">
-		<h1>Setting up Node.js</h1>
-		...some code added by Sheldon and maybe a segway into a live demo...
-		</section>
-		
-		<section data-background="images/bg-stars.jpg">
-		<h1>Hosting the Application</h1>
-		...some code added by Sheldon and maybe a segway into a live demo...
-		</section>
-		
-		<section data-background="images/bg-stars.jpg">
-		<h1>GIS without GIS Servers!</h1>
-        <p class="fragment">Cheap Hosting</p>
-		<p class="fragment">PostGIS goodness</p>
-		<p class="fragment">JavaScript simplicity</p>
-		<p class="fragment">Load GIS data on Google Maps</p>
-		</section>
-		
-		<section data-background="images/bg-stars.jpg">
-		<h1>The Demo</h1>
-		<h2><a href="http://agic2014.sunny.solutions/azclick.html">GIS in Google Maps</a></h2>
-		</section>
-		
-		<section data-background="images/bg-stars.jpg">
-		<h1>Fork it on GitHub</h1>
-		URL here to Github repo
-		</section>
-		
+        <section data-background="images/bg-stars.jpg">
+          <h3>Using GeoJSON with Google Maps:</h3>
+          <p>Google Maps Javascript API v3 Data Layer</p>
+          
+          <pre><code data-trim contenteditable>
+          map.data.loadGeoJson('http://localhost/prescott.json');
+          </code></pre>
+        </section>
+
+        <section data-background="images/bg-stars.jpg">
+          <h2>Leaflet too!</h2>
+          <pre><code data-trim contenteditable>
+            L.geoJson(geojsonFeature).addTo(map);
+          </code></pre>
+
+          <h2>And Openlayers . . . </h2>
+          <pre><code data-trim contenteditable>
+            var vectorSource = new ol.source.GeoJSON(.........
+          </code></pre>
+
+          <p>.loadGeoJson, .geoJson, .GeoJSON . . . <br>WE ARE ALL INDEPENDENT THINKERS<p>
+
+          <aside class="notes">
+            .loadGeoJson, .geoJson, .GeoJSON . . . it's the XMLHTTPRequest of our time . . . we need an abstraction from the abstraction.
+          </aside>
+
+        </section>
+
+      
+        <section data-background="images/bg-stars.jpg">
+          <h1>Loading data into PostGIS</h1>
+          ...some code added by Sheldon and maybe a segway into a live demo...
+        </section>
+    
+        <section data-background="images/bg-stars.jpg">
+          <h1>Setting up Node.js</h1>
+          ...some code added by Sheldon and maybe a segway into a live demo...
+        </section>
+    
+        <section data-background="images/bg-stars.jpg">
+        <h1>Hosting the Application</h1>
+        ...some code added by Sheldon and maybe a segway into a live demo...
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+          <h1>GIS without GIS Servers!</h1>
+              <p class="fragment">Cheap Hosting</p>
+          <p class="fragment">PostGIS goodness</p>
+          <p class="fragment">JavaScript simplicity</p>
+          <p class="fragment">Load GIS data on Google Maps</p>
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+          <h1>The Demo</h1>
+          <h2><a href="http://agic2014.sunny.solutions/azclick.html">GIS in Google Maps</a></h2>
+        </section>
+
+        <section data-background="images/bg-stars.jpg">
+          <h1>Cons?</h1>
+
+          <p>More DOM elements . . . can be slow . . . but not forever</p>
+          <p>Mobile?</p>
+          <p></p>
+          <p></p>
+
+        </section>
+        
+        <section data-background="images/bg-stars.jpg">
+          <h1>Fork it on GitHub</h1>
+          <a href="https://github.com/tooshel/node-gis-server/">
+          https://github.com/tooshel/node-gis-server/
+          </a>
+          <br>
+          which was a fork of
+          <br>
+          <a href="https://github.com/ManoMarks/node-gis-server/">
+          https://github.com/ManoMarks/node-gis-server/
+          </a>
+          <br>
+          which was a fork of
+          <br>
+          <a href="https://github.com/geobabbler/node-gis-server/">
+          https://github.com/geobabbler/node-gis-server/
+          </a>
+
+          <br>
+          <br>
+
+          <h2>Sharing is caring</h2>
+        </section>
+    
         <section>
           <h1>END</h1>
           <h2>Questions?</h2>

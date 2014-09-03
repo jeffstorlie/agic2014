@@ -79,7 +79,7 @@
           
         </section>
 
-        <section data-background="images/bg-stars.jpg" id="fragments">
+        <section data-background="images/bg-stars.jpg">
           <h1>Why No GIS Servers?</h1>
           <p class="fragment">They are slow</p>
           <p class="fragment">They <strike>are</strike> can be expensive to license</p>
@@ -151,21 +151,236 @@
           
         </section>    
 
-        <section data-background="images/bg-stars.jpg">
-          <h2>Node.js</h2>
-          A whole lotta goodness from Sheldon
+        <section data-background="images/nodejs-1024x768.png">
+          <!-- <h2>Node.js</h2> -->
+          <aside class="notes">
+            JAMES: Does intro about what node is/why
+          </aside>
+
         </section>
 
         <section data-background="images/bg-stars.jpg">
           <h2>PostGIS</h2>
-          <img src="images/Logo_square_postgis.png">
+          <!-- <img width="200" style="float:left; margin-right:20px;" src="images/Logo_square_postgis.png"> -->
+          <img width="200" src="images/Logo_square_postgis.png">
+          <aside class="notes">
+            JAMES: Does intro about PostGIS
+          </aside>
         </section>
         
         <section data-background="images/bg-stars.jpg">
           <h2>Google Maps</h2>
-          <img src="images/googlemapsscreenshot.jpg" width=400>
+          <img src="images/googlemapsscreenshot.jpg" width="400">
+          <aside class="notes">
+            JAMES: Gives a shoutout to Google and GeoJSON
+          </aside>
         </section>
 
+
+        <section data-background="images/serious-anne-wide.gif">
+          <p>Time to get serious</p>
+          <aside class="notes">
+            JAMES: Does intro about what node is/why
+          </aside>
+
+        </section>
+
+        <!-- <section data-background="images/bg-stars.jpg"> -->
+        <section data-background="images/serious-anne-wide.gif">
+          <h1>Loading data into PostGIS</h1>
+          <pre><code data-trim contenteditable>
+// Make your database PostGIS Aware
+psql -U username -d mygisdb
+CREATE EXTENSION POSTGIS;
+
+// Use magic, free, cross-platform tool to export shape to sql
+shp2pgsql -s 4326 AZBoundary.shp AZBoundary > sql/AZBoundary.sql
+
+// import that into our database
+psql -h localhost -d mygisdb -U postgres -f sql/AZBoundary.sql
+
+// pull data out as GeOjSoN
+SELECT ST_AsGeoJson(ST_Transform(b.geom,4326)) as geojson
+          </code></pre>
+
+        </section>
+    
+        <section data-background="images/bg-stars.jpg">
+          <h2>Setting up Node.js</h2>
+          <pre><code data-trim contenteditable>
+// Don't need the latest but most people install from source on Linux
+wget -N http://nodejs.org/dist/node-latest.tar.gz
+tar xzvf node-latest.tar.gz && cd node-v*
+
+// On Red Hat/Cent/Fedora? Use epel
+yum install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+yum install nodejs npm --enablerepo=epel
+          </code></pre>
+
+          <aside class="notes">
+            https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
+          </aside>
+        </section>
+
+        <section data-background="images/bg-stars.jpg">
+          <h3>NO! Not that kind of setup!</h3>
+          <h2>Setting up Node.js</h2>
+          <pre><code data-trim contenteditable>
+//get the repo . . . maybe put it in /var/www?
+git clone https://github.com/tooshel/node-gis-server
+
+//install dependancies . . . there are only two
+npm install
+          </code></pre>
+
+          <aside class="notes">
+          </aside>
+        </section>
+
+        <section data-background="images/bg-stars.jpg">
+          <h1>Node.js</h1>
+          <p>Line by line!</p>
+
+          <pre><code data-trim contenteditable>
+var pg = require('pg');
+var geojson = require('../helpers/geojson');
+var jsonp = require('../helpers/jsonp');
+var settings = require('../settings');
+
+module.exports.controller = function(app) {
+
+  /* enable CORS */
+  app.all('*', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+    next();
+  });
+
+  app.get('/vector/:schema/:table/:geom/intersect', function(req, res, next) {
+    var queryshape = ' {"type": "Point", "coordinates": [' + req.query['lng'] + ',' + req.query['lat'] + '] }';
+    var geom = req.params.geom.toLowerCase();
+    if ((geom != 'features') && (geom != 'geometry') && (geom != 'all')) {
+      res.status(404).send("Resource '" + geom + "' not found");
+      return;
+    }
+    var schemaname = req.params.schema;
+    var tablename = req.params.table;
+    var fullname = schemaname + '.' + tablename;
+    pg.connect(settings.database, function(err, client, done) {
+      // var spatialcol = 'wkb_geometry';
+      var spatialcol = 'geom';
+      var sql;
+      var coll;
+      if (geom == 'features') {
+        sql = 'select st_asgeojson(st_transform(' + spatialcol + ',4326)) as geojson, * from ' + tablename + ' where ST_INTERSECTS(' + spatialcol + ", ST_SetSRID(ST_GeomFromGeoJSON('" + queryshape + "'),4326));";
+        coll = {
+          type: 'FeatureCollection',
+          features: []
+        };
+        query = client.query(sql);
+      }
+
+      if (geom == 'all') {
+        sql = 'select st_asgeojson(st_transform(' + spatialcol + ',4326)) as geojson, * from ' + tablename;
+        coll = {
+          type: 'FeatureCollection',
+          features: []
+        };
+        query = client.query(sql);
+      }
+
+      query.on('row', function(result) {
+        var props = new Object;
+        if (!result) {
+          return res.send('No data found');
+        }
+        else {
+          if (geom == 'features' ||  geom == 'all') {
+            coll.features.push(geojson.getFeatureResult(result, spatialcol));
+          } else if (geom == 'geometry') {
+            var shape = JSON.parse(result.geojson);
+            coll.geometries.push(shape);
+          }
+        }
+      });
+
+      query.on('end', function(err, result) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(jsonp.getJsonP(req.query.callback, coll));
+        done();
+      });
+    });
+  });
+  app.get('/neighbor/:schema/:table/:geom/intersect', function(req, res, next) {
+    var queryshape = "'SRID=4326;POINT(" + req.query['lng'] +' ' + req.query['lat'] + ")'";
+    var geom = req.params.geom.toLowerCase();
+    if ((geom != 'features') && (geom != 'geometry')) {
+      res.status(404).send("Resource '" + geom + "' not found");
+      return;
+    }
+    var schemaname = req.params.schema;
+    var tablename = req.params.table;
+    var fullname = schemaname + '.' + tablename;
+    pg.connect(settings.database, function(err, client, done) {
+      var spatialcol = 'wkb_geometry';
+      var sql;
+      var coll;
+      if (geom == 'features') {
+        sql = 'SELECT ST_AsGeoJson(ST_Transform(b.' + spatialcol + ',4326)) as geojson, * from ' + tablename + ' as a, ' + tablename + ' as b where st_distance(a.' + spatialcol + ',b.' + spatialcol + ') < .00005 and ST_INTERSECTS(a.' + spatialcol + ', ST_GeographyFromText(' + queryshape + '));'
+        //sql = 'SELECT ST_AsGeoJson(ST_Transform(b.' + spatialcol + ',4326)) as geojson, * from ' + tablename + ' as a, ' + tablename + ' as b where st_touches(a.' + spatialcol + ',b.' + spatialcol + ') and ST_INTERSECTS(a.' + spatialcol + ', ST_GeographyFromText(' + queryshape + '));'
+        coll = {
+          type: 'FeatureCollection',
+          features: []
+        };
+        query = client.query(sql);
+      }
+
+      query.on('row', function(result) {
+        var props = new Object;
+        if (!result) {
+          return res.send('No data found');
+        }
+        else {
+          if (geom == 'features') {
+            coll.features.push(geojson.getFeatureResult(result, spatialcol));
+          } else if (geom == 'geometry') {
+            var shape = JSON.parse(result.geojson);
+            coll.geometries.push(shape);
+          }
+        }
+      });
+
+      query.on('end', function(err, result) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(jsonp.getJsonP(req.query.callback, coll));
+        done();
+      });
+    });
+  });
+
+};
+
+          </code></pre>
+          <aside class="notes">
+            JOKE: We're going over this, line by line.
+          </aside>
+        </section>
+
+        <section data-background="images/bg-stars.jpg">
+          <h2>Hosting the Application</h2>
+          <pre><code data-trim contenteditable>
+//Install pm2 (globally) 
+npm install -g pm2
+
+//use pm2 to start the server, it's listening on port 3000
+pm2 start server.js
+
+//you should probably put it all behind nginx and proxy to 3000
+//but in this case just used some iptables magic
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3000
+          </code></pre>
+        </section>
+       
         <section data-background="images/bg-stars.jpg">
           <h3>Using GeoJSON with Google Maps:</h3>
           <p>Google Maps Javascript API v3 Data Layer</p>
@@ -192,32 +407,19 @@
             .loadGeoJson, .geoJson, .GeoJSON . . . it's the XMLHTTPRequest of our time . . . we need an abstraction from the abstraction.
           </aside>
 
+          <aside class="notes">
+           Sheldon: Back to you James!
+          </aside>
         </section>
 
-      
-        <section data-background="images/bg-stars.jpg">
-          <h1>Loading data into PostGIS</h1>
-          ...some code added by Sheldon and maybe a segway into a live demo...
-        </section>
-    
-        <section data-background="images/bg-stars.jpg">
-          <h1>Setting up Node.js</h1>
-          ...some code added by Sheldon and maybe a segway into a live demo...
-        </section>
-    
-        <section data-background="images/bg-stars.jpg">
-        <h1>Hosting the Application</h1>
-        ...some code added by Sheldon and maybe a segway into a live demo...
-        </section>
-        
         <section data-background="images/bg-stars.jpg">
           <h1>GIS without GIS Servers!</h1>
-              <p class="fragment">Cheap Hosting</p>
+          <p class="fragment">Cheap Hosting</p>
           <p class="fragment">PostGIS goodness</p>
           <p class="fragment">JavaScript simplicity</p>
           <p class="fragment">Load GIS data on Google Maps</p>
         </section>
-        
+
         <section data-background="images/bg-stars.jpg">
           <h1>The Demo</h1>
           <h2><a href="http://agic2014.sunny.solutions/azclick.html">GIS in Google Maps</a></h2>
